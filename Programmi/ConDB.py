@@ -1,24 +1,32 @@
-import mysql.connector
+import pymysql
 
 class MariaDB:
-    def __init__(self, optional_host="195.231.112.144", optional_user="host", optional_password="host", optional_database="ShotMarket"):
-        if optional_host is None or optional_user is None or optional_password is None or optional_database is None:
-            self.host = "195.231.112.144"
-            self.user = "host"
-            self.password = "host"
-            self.database = "ShotMarket"
-        else:
-            self.host = optional_host
-            self.user = optional_user
-            self.password = optional_password
-            self.database = optional_database
-        self.conn = mysql.connector.connect(
-            host=optional_host,
-            user=optional_user,
-            password=optional_password,
-            database=optional_database
-        )
-        self.cursor = self.conn.cursor()
+    def __init__(self):
+        try:
+            if self.readConfig():
+                self.conn = pymysql.connect(
+                    host= self.host,
+                    user= self.user,
+                    password= self.password,
+                    database= self.database,
+                    port=3306
+                )
+                self.cursor = self.conn.cursor()
+            else:
+                self.readConfig()
+                self.conn = pymysql.connect(
+                    host= self.host,
+                    user= self.user,
+                    password= self.password,
+                    database= self.database,
+                    port=3306
+                )
+                self.cursor = self.conn.cursor()
+
+        except:
+            self.writeConfig("195.231.112.144", "host", "host", "ShotMarket")
+            self.__init__()
+
 
     def execute(self, query, params=None):
         if params is None:
@@ -44,6 +52,36 @@ class MariaDB:
 
     def getDatabase(self):
         return self.database
+
+    #funziona che controlla se il file esiste
+    def checkFileExists(self):
+        try:
+            open("config.txt", "r")
+            return True
+        except:
+            return False
+
+    #funzione per scrivere dati collegamento al database su file config.txt
+    def writeConfig(self, host, user, password, database):
+        file = open("config.txt", "w")
+        file.write(host + "\n")
+        file.write(user + "\n")
+        file.write(password + "\n")
+        file.write(database + "\n")
+        file.close()
+
+
+    #funzione per leggere i dati dal file config.txt
+    def readConfig(self):
+        if not self.checkFileExists():
+            self.writeConfig("195.231.112.144", "host", "host", "ShotMarket")
+        file = open("config.txt", "r")
+        self.host = file.readline().strip()
+        self.user = file.readline().strip()
+        self.password = file.readline().strip()
+        self.database = file.readline().strip()
+        file.close()
+        return True
 
 ''''
 come richiamarlo in altri programmi
