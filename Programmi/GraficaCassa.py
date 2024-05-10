@@ -3,12 +3,21 @@ from tkinter import ttk
 
 import GraficaFidelity
 import GraficaImpostazioni
+from ConDB import MariaDB
 
 
 def main():
     #-----------------------------#
     #funzioni generali
     #------------------------------------------------------------------------------#
+
+    #TODO funzione che raccoglie i valori dei cibi dal db e ne calcola i prezzi
+    #TODO funzione che aggiunge i cibi alla treeview dopo aver letto l'uid dell'utente (deve essere trasmesso anche a fidelity)
+    def aggiunaCibo():
+        db=MariaDB()
+        db.execute("SELECT * FROM Cibo VALUES (descrizione, quantita, prezzo) where uid = self.uid") #self.uid è da creare
+
+
 
     #funzione del bottono bImpostazioni per aprire la finestra di impostazioni
     def apriImpostazioni():
