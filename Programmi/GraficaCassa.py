@@ -49,45 +49,61 @@ for col in columns:
 # Inserimento del treeview nella finestra
 listbox.grid(row=0, column=0, columnspan=2)
 
+
+#funzione per il focus utilizzato per l'inserimento dalla tastiera
+def on_entry_focus(event, entry):
+    global current_entry
+    current_entry = entry
 #inserimento di tre caselle di testo e di un tastierino in frame3
 label1 = tk.Label(master=frame3, text="Nome Prodotto")
 label1.grid(row=0, column=0)
-entry1 = tk.Entry(master=frame3)
+entry1 = tk.Entry(master=frame3, width=50)
+entry1.bind("<FocusIn>", lambda event: on_entry_focus(event, entry1))
 entry1.grid(row=1, column=0)
 label2 = tk.Label(master=frame3, text="Quantita")
 label2.grid(row=2, column=0)
-entry2 = tk.Entry(master=frame3)
+entry2 = tk.Entry(master=frame3, width=50)
+entry2.bind("<FocusIn>", lambda event: on_entry_focus(event, entry2))
 entry2.grid(row=3, column=0)
 label3 = tk.Label(master=frame3, text="Prezzo")
 label3.grid(row=4, column=0)
-entry3 = tk.Entry(master=frame3)
+entry3 = tk.Entry(master=frame3, width=50)
+entry3.bind("<FocusIn>", lambda event: on_entry_focus(event, entry3))
 entry3.grid(row=5, column=0)
+
+frame3_layout = [
+    [label1, entry1],
+    [label2, entry2],
+    [label3, entry3]
+]
+
+for row, row_layout in enumerate(frame3_layout):
+    for col, widget in enumerate(row_layout):
+        widget.grid(row=row, column=col, sticky="ew")
+
 #tastierino con nove pulsanti
-tastiera = tk.Frame(master=frame3)
-tastiera.grid(row=6, column=0, rowspan=7)
-b1 = tk.Button(master=tastiera, text="1", width=5)
-b1.grid(row=0, column=0)
-b2 = tk.Button(master=tastiera, text="2", width=5)
-b2.grid(row=0, column=1)
-b3 = tk.Button(master=tastiera, text="3", width=5)
-b3.grid(row=0, column=2)
-b4 = tk.Button(master=tastiera, text="4", width=5)
-b4.grid(row=1, column=0)
-b5 = tk.Button(master=tastiera, text="5", width=5)
-b5.grid(row=1, column=1)
-b6 = tk.Button(master=tastiera, text="6", width=5)
-b6.grid(row=1, column=2)
-b7 = tk.Button(master=tastiera, text="7", width=5)
-b7.grid(row=2, column=0)
-b8 = tk.Button(master=tastiera, text="8", width=5)
-b8.grid(row=2, column=1)
-b9 = tk.Button(master=tastiera, text="9", width=5)
-b9.grid(row=2, column=2)
-b0 = tk.Button(master=tastiera, text="0", width=5)
-b0.grid(row=3, column=1)
-bCancella = tk.Button(master=tastiera, text="Cancella", width=5)
-bCancella.grid(row=3, column=2)
-bInvio = tk.Button(master=tastiera, text="Invio", width=5)
-bInvio.grid(row=3, column=0)
+def on_key_press(key):
+    if current_entry:
+        if key == "cancella":
+            current_entry.delete(0, tk.END)
+        elif key == "invio":
+            current_entry.insert(tk.END, "\n")
+        else:
+            current_entry.insert(tk.END, key)
+
+tastiera_layout = [
+    ["1", "2", "3"],
+    ["4", "5", "6"],
+    ["7", "8", "9"],
+    ["cancella", "0", "invio"]
+]
+
+for row, row_layout in enumerate(tastiera_layout):
+    for col, tasti in enumerate(row_layout):
+        (tk.Button(master=frame3, text=tasti, width=5, command=lambda key=tasti: on_key_press(key), )
+         .grid(row=row + 3, column=col, sticky="new"))
+
+
+
 
 window.mainloop()

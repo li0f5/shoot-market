@@ -13,6 +13,10 @@ def getDatiConDatabase():
     entry2.insert(0, dati[0][2])
     entry3.insert(0, dati[0][3])
     entry4.insert(0, dati[0][4])
+    entry1.configure(state="readonly")
+    entry2.configure(state="readonly")
+    entry3.configure(state="readonly")
+    entry4.configure(state="readonly")
 
 
 #creazione della finestra
@@ -69,49 +73,65 @@ label3.grid(row=0, column=2)
 entry3 = tk.Entry(master=frame2)
 entry3.grid(row=1, column=2)
 
+frame2_layout = [
+    [label1, entry1],
+    [label2, entry2],
+    [label3, entry3]
+]
 
+for row, row_layout in enumerate(frame2_layout):
+    for col, widget in enumerate(row_layout):
+        widget.grid(row=row, column=col, sticky="ew")
+
+#funzione per il focus utilizzato per l'inserimento dalla tastiera
+def on_entry_focus(event, entry):
+    global current_entry
+    current_entry = entry
 #inserimento di text box in frame3 per conteggio punti e inserimento di due bottoni
 label4 = tk.Label(master=frame3, text="Punti Posseduti")
-label4.grid(row=0, column=0)
 entry4 = tk.Entry(master=frame3)
-entry4.grid(row=1, column=0)
+entry4.bind("<FocusIn>", lambda event: on_entry_focus(event, entry4))
 label5 = tk.Label(master=frame3, text="Punti da aggiungere")
-label5.grid(row=0, column=1)
 entry5 = tk.Entry(master=frame3)
-entry5.grid(row=1, column=1)
+entry5.bind("<FocusIn>", lambda event: on_entry_focus(event, entry5))
 label6 = tk.Label(master=frame3, text="Punti da utilizzare")
-label6.grid(row=0, column=2)
 entry6 = tk.Entry(master=frame3)
-entry6.grid(row=1, column=2)
+entry6.bind("<FocusIn>", lambda event: on_entry_focus(event, entry6))
+
+
+frame3_layout = [
+    [label4, entry4],
+    [label5, entry5],
+    [label6, entry6]
+]
+
+for row, row_layout in enumerate(frame3_layout):
+    for col, widget in enumerate(row_layout):
+        widget.grid(row=row, column=col, sticky="ew")
 #tastiera numerica
-tastiera = tk.Frame(master=frame3)
-tastiera.grid(row=2, column=0, rowspan=7)
-b1 = tk.Button(master=tastiera, text="1", width=5)
-b1.grid(row=0, column=0)
-b2 = tk.Button(master=tastiera, text="2", width=5)
-b2.grid(row=0, column=1)
-b3 = tk.Button(master=tastiera, text="3", width=5)
-b3.grid(row=0, column=2)
-b4 = tk.Button(master=tastiera, text="4", width=5)
-b4.grid(row=1, column=0)
-b5 = tk.Button(master=tastiera, text="5", width=5)
-b5.grid(row=1, column=1)
-b6 = tk.Button(master=tastiera, text="6", width=5)
-b6.grid(row=1, column=2)
-b7 = tk.Button(master=tastiera, text="7", width=5)
-b7.grid(row=2, column=0)
-b8 = tk.Button(master=tastiera, text="8", width=5)
-b8.grid(row=2, column=1)
-b9 = tk.Button(master=tastiera, text="9", width=5)
-b9.grid(row=2, column=2)
-b0 = tk.Button(master=tastiera, text="0", width=5)
-b0.grid(row=3, column=0)
-bPunti = tk.Button(master=tastiera, text="Aggiorna punti", width=15)
-bPunti.grid(row=3, column=1, sticky="w", columnspan=2)
-bUtilizzaPunti = tk.Button(master=tastiera, text="Utilizza punti", width=15)
-bUtilizzaPunti.grid(row=4, column=0, sticky="ew", columnspan=3)
+def on_key_press(key):
+    if current_entry:
+        if key == "cancella":
+            current_entry.delete(0, tk.END)
+        elif key == "invio":
+            current_entry.insert(tk.END, "\n")
+        else:
+            current_entry.insert(tk.END, key)
+
+tastiera_layout = [
+    ["1", "2", "3"],
+    ["4", "5", "6"],
+    ["7", "8", "9"],
+    ["cancella", "0", "invio"]
+]
+
+for row, row_layout in enumerate(tastiera_layout):
+    for col, tasti in enumerate(row_layout):
+        (tk.Button(master=frame3, text=tasti, width=5, command=lambda key=tasti: on_key_press(key), )
+         .grid(row=row + 3, column=col, sticky="ew"))
 
 
 
 getDatiConDatabase()
+
 window.mainloop()

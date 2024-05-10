@@ -75,32 +75,40 @@ def on_entry_focus(event, entry):
     current_entry = entry
 #inserisco dei textbox, in cui sono presenti i dati per la connesione a un database, nella prima riga del frame 2
 label1 = tk.Label(master=frame2, text="Host")
-label1.grid(row=0, column=0, padx=10, sticky="nw")
 entry1 = tk.Entry(master=frame2)
-entry1.grid(row=1, column=0, padx=10, sticky="nw")
 entry1.bind("<FocusIn>", lambda event: on_entry_focus(event, entry1))
 label2 = tk.Label(master=frame2, text="Username")
-label2.grid(row=0, column=1, padx=10, sticky="nw")
 entry2 = tk.Entry(master=frame2)
 entry2.bind("<FocusIn>", lambda event: on_entry_focus(event, entry2))
-entry2.grid(row=1, column=1, padx=10, sticky="nw")
 label3 = tk.Label(master=frame2, text="Password")
-label3.grid(row=0, column=2, padx=10, sticky="nw")
 entry3 = tk.Entry(master=frame2)
 entry3.bind("<FocusIn>", lambda event: on_entry_focus(event, entry3))
-entry3.grid(row=1, column=2, padx=10, sticky="nw")
 label4 = tk.Label(master=frame2, text="Database")
-label4.grid(row=0, column=3, padx=10, sticky="nw")
 entry4 = tk.Entry(master=frame2)
 entry4.bind("<FocusIn>", lambda event: on_entry_focus(event, entry4))
-entry4.grid(row=1, column=3, padx=10, sticky="nw")
 getDatiConDatabase()
+
+frame2_layout = [
+    [label1, entry1],
+    [label2, entry2],
+    [label3, entry3],
+    [label4, entry4]
+]
+
+for row in frame2_layout:
+    for col in row:
+        col.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+
 
 #tastiera intera in frame3
 def on_key_press(key):
     if current_entry:
-        current_entry.insert(tk.END, key)
-
+        if key == "Backspace":
+            current_entry.delete(0, tk.END)
+        elif key == "Space":
+            current_entry.insert(tk.END, " ")
+        else:
+            current_entry.insert(tk.END, key)
 
 keyboard_layout = [
     ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='],
@@ -116,7 +124,7 @@ for row in keyboard_layout:
     for key in row:
         button = tk.Button(key_frame, text=key, width=5, height=2,
                            command=lambda k=key: on_key_press(k))
-        button.pack(side=tk.LEFT)
+        button.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
 
 window.mainloop()
