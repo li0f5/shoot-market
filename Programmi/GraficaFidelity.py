@@ -2,6 +2,19 @@ import subprocess
 import tkinter as tk
 from tkinter import ttk
 
+from Programmi.ConDB import MariaDB
+
+
+#funzione che imposta i valori di default
+def getDatiConDatabase():
+    db=MariaDB()
+    dati = db.execute("SELECT * FROM Utente where uid = 1")#uid è da aggiungere
+    entry1.insert(0, dati[0][1])
+    entry2.insert(0, dati[0][2])
+    entry3.insert(0, dati[0][3])
+    entry4.insert(0, dati[0][4])
+
+
 #creazione della finestra
 window = tk.Tk()
 window.title("Cassa")
@@ -51,7 +64,7 @@ label2 = tk.Label(master=frame2, text="Cognome")
 label2.grid(row=0, column=1)
 entry2 = tk.Entry(master=frame2)
 entry2.grid(row=1, column=1)
-label3 = tk.Label(master=frame2, text="Mail")
+label3 = tk.Label(master=frame2, text="data iscrizione")
 label3.grid(row=0, column=2)
 entry3 = tk.Entry(master=frame2)
 entry3.grid(row=1, column=2)
@@ -98,4 +111,7 @@ bPunti.grid(row=3, column=1, sticky="w", columnspan=2)
 bUtilizzaPunti = tk.Button(master=tastiera, text="Utilizza punti", width=15)
 bUtilizzaPunti.grid(row=4, column=0, sticky="ew", columnspan=3)
 
+
+
+getDatiConDatabase()
 window.mainloop()

@@ -2,6 +2,36 @@
 import subprocess
 import tkinter as tk
 
+from Programmi.ConDB import MariaDB
+
+
+#funzione che imposta i valori di default
+def getDatiConDatabase():
+    if entry1.get() == "" or entry2.get() == "" or entry3.get() == "" or entry4.get() == "":
+        db = MariaDB()
+        entry1.insert(0, db.getHost())
+        entry2.insert(0, db.getUser())
+        entry3.insert(0, db.getPassword())
+        entry4.insert(0, db.getDatabase())
+    else:
+        db = MariaDB(
+            host=entry1.get(),
+            user=entry2.get(),
+            password=entry3.get(),
+            database=entry4.get()
+        )
+
+
+#funzione del bottono bCassa per aprire la finestra di cassa
+def arpiCassa():
+    window.destroy()
+    subprocess.Popen(["python", "GraficaCassa.py"])
+#funzione del bottono bFidelity per aprire la finestra di fidelity
+def apriFidelity():
+    window.destroy()
+    subprocess.Popen(["python", "GraficaFidelity.py"])
+
+
 
 #creazione della finestra
 window = tk.Tk()
@@ -19,14 +49,6 @@ frame3 = tk.Frame(master=window, bg="green")
 frame3.pack(side="bottom", fill="both", expand=True)
 
 
-#funzione del bottono bCassa per aprire la finestra di cassa
-def arpiCassa():
-    window.destroy()
-    subprocess.Popen(["python", "GraficaCassa.py"])
-#funzione del bottono bFidelity per aprire la finestra di fidelity
-def apriFidelity():
-    window.destroy()
-    subprocess.Popen(["python", "GraficaFidelity.py"])
 #inserimento di 7 bottoni in frame1
 bCassa = tk.Button(master=frame1, text="Cassa", width=15, command=arpiCassa)
 bCassa.grid(row=0, column=0, sticky="ew")
@@ -72,7 +94,7 @@ label4.grid(row=0, column=3, padx=10, sticky="nw")
 entry4 = tk.Entry(master=frame2)
 entry4.bind("<FocusIn>", lambda event: on_entry_focus(event, entry4))
 entry4.grid(row=1, column=3, padx=10, sticky="nw")
-
+getDatiConDatabase()
 
 #tastiera intera in frame3
 def on_key_press(key):
